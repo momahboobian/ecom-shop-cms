@@ -4,7 +4,6 @@ import type { Config } from '../../payload/payload-types'
 import { ORDER } from '../_graphql/orders'
 import { PAGE } from '../_graphql/pages'
 import { PRODUCT } from '../_graphql/products'
-import { CATEGORIES } from '../_graphql/categories'
 import { GRAPHQL_API_URL } from './shared'
 import { payloadToken } from './token'
 
@@ -20,10 +19,6 @@ const queryMap = {
   orders: {
     query: ORDER,
     key: 'Orders',
-  },
-  categories: {
-    query: CATEGORIES,
-    key: 'categories',
   },
 }
 
