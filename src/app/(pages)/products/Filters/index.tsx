@@ -4,24 +4,26 @@ import React, { useState } from 'react'
 
 import { Category } from '../../../../payload/payload-types'
 import { Checkbox } from '../../../_components/Checkbox'
+import { HR } from '../../../_components/HR'
+import { RadioButton } from '../../../_components/Radio'
 import { useFilter } from '../../../_providers/Filter'
 
 import classes from './index.module.scss'
-import { HR } from '../../../_components/HR'
 
 const Filters = ({ categories }: { categories: Category[] }) => {
   const { categoryFilters, sort, setCategoryFilters, setSort } = useFilter()
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-
   const handleCategories = (categoryId: string) => {
-    const isSelected = selectedCategories.includes(categoryId)
-    const updatedSelection = isSelected
-      ? selectedCategories.filter(id => id !== categoryId)
-      : [...selectedCategories, categoryId]
+    if (categoryFilters.includes(categoryId)) {
+      const updateCategories = categoryFilters.filter(id => id !== categoryId)
 
-    setSelectedCategories(updatedSelection)
+      setCategoryFilters(updateCategories)
+    } else {
+      setCategoryFilters([...categoryFilters, categoryId])
+    }
   }
+
+  const handleSort = (value: string) => setSort(value)
 
   return (
     <div className={classes.filters}>
@@ -37,7 +39,7 @@ const Filters = ({ categories }: { categories: Category[] }) => {
                 label={category.title}
                 value={category.id}
                 isSelected={isSelected}
-                onClickHandler={() => handleCategories(category.id)}
+                onClickHandler={handleCategories}
               />
             )
           })}
@@ -45,7 +47,21 @@ const Filters = ({ categories }: { categories: Category[] }) => {
         <HR className={classes.hr} />
         <h6 className={classes.title}></h6>
         <div className={classes.categories}>
-          <RadioButton />
+          <RadioButton
+            label="Latest"
+            value="-createdAt"
+            isSelected={sort === '-createdAt'}
+            onRadioChange={handleSort}
+            groupName="sort"
+          />
+
+          <RadioButton
+            label="Oldest"
+            value="createdAt"
+            isSelected={sort === 'createdAt'}
+            onRadioChange={handleSort}
+            groupName="sort"
+          />
         </div>
       </div>
     </div>
