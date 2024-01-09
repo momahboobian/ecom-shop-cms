@@ -1,8 +1,43 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useMemo, useState } from 'react'
 
 import classes from './index.module.scss'
 
 const Promotion = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  })
+
+  // Calculate the target date
+  const targetDate = new Date()
+  targetDate.setTime(targetDate.getTime() + 7 * 24 * 60 * 60 * 1000)
+
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      const currentTime = new Date()
+      const timeDifference = Math.max(Number(targetDate) - Number(currentTime), 0)
+
+      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+      const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24)
+      const minutes = Math.floor((timeDifference / 1000 / 60) % 60)
+      const seconds = Math.floor((timeDifference / 1000) % 60)
+
+      setTimeLeft({ days, hours, minutes, seconds })
+
+      if (timeDifference === 0) {
+        clearInterval(timerInterval)
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(timerInterval)
+    }
+  }, [])
+
   return (
     <section className={classes.promotion}>
       <div className={classes.textBox}>
@@ -14,7 +49,12 @@ const Promotion = () => {
           choices and amazing deals. Don't miss out! 🎁🛒
         </p>
 
-        <ul className={classes.stats}></ul>
+        <ul className={classes.stats}>
+          <StateBox label="Days" value={timeLeft.days} />
+          <StateBox label="Hours" value={timeLeft.hours} />
+          <StateBox label="Minutes" value={timeLeft.minutes} />
+          <StateBox label="Seconds" value={timeLeft.seconds} />
+        </ul>
       </div>
     </section>
   )
@@ -22,8 +62,8 @@ const Promotion = () => {
 
 const StateBox = ({ label, value }: { label: string; value: number }) => (
   <li className={classes.statBox}>
-    <h4>5</h4>
-    <p>Days</p>
+    <h4>{value}</h4>
+    <p>{label}</p>
   </li>
 )
 
